@@ -1,19 +1,20 @@
 ﻿using System;
 using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Bank2ver
 {
     public abstract class Konto
     {
-        string NrKonta;
-        double Saldo;
+        public string NrKonta { get; set; }
+        public double Saldo { get; set; }
 
         public abstract double Wplac(double kwotaWplaty);
-        public abstract double Wyplac(double kwotaWyplaty);
+        public abstract void Wyplac(double kwotaWyplaty);
+
+        public override string ToString()
+        {
+            return String.Format("Numer konta: {0} Saldo: {1}", NrKonta, Saldo);
+        }
     }
 
     interface IOsobista
@@ -28,21 +29,19 @@ namespace Bank2ver
 
     public class KontoOsobiste : Konto, IOsobista
     {
-        string NrKonta;
-        double Saldo;
         readonly double MaxWyplata = 1000.00;
 
         public KontoOsobiste(string nrKonta, double saldo)
         {
-            nrKonta = NrKonta;
-            saldo = Saldo;
+            NrKonta = nrKonta;
+            Saldo = saldo;
         }
 
         public bool KontrolaWyplaty(double kwotaWyplaty)
         {
             if (kwotaWyplaty > MaxWyplata)
-                return false;
-            return true;
+                return true;
+            return false;
         }
 
         public override double Wplac(double kwotaWplaty)
@@ -50,19 +49,21 @@ namespace Bank2ver
             return Saldo += kwotaWplaty;
         }
 
-        public override double Wyplac(double kwotaWyplaty)
+        public override void Wyplac(double kwotaWyplaty)
         {
-            if (KontrolaWyplaty(kwotaWyplaty))
-                return Saldo -= kwotaWyplaty;
-            return -1;
+            if (KontrolaWyplaty(kwotaWyplaty) == true || kwotaWyplaty >= Saldo)
+            {
+                Console.WriteLine("Brak środków lub przekroczono dzienny limit");
+            }
+            else
+            {
+                Saldo -= kwotaWyplaty;   
+            }
         }
     }
 
     public class KontoLokata : Konto, IZysk
     {
-        string NrKonta;
-        double Saldo;
-
         public KontoLokata(string nrKonta, double saldo)
         {
             NrKonta = nrKonta;
@@ -71,7 +72,7 @@ namespace Bank2ver
 
         public double ObliczZysk(double stopaProcentowa)
         {
-            return Saldo += Saldo * stopaProcentowa;
+            return Saldo * stopaProcentowa;
         }
 
         public override double Wplac(double kwotaWplaty)
@@ -79,33 +80,32 @@ namespace Bank2ver
             return Saldo += kwotaWplaty;
         }
 
-        public override double Wyplac(double kwotaWyplaty)
+        public override void Wyplac(double kwotaWyplaty)
         {
-            return Saldo -= kwotaWyplaty;
+            Saldo -= kwotaWyplaty;
         }
     }
 
     public class Bank
     {
-        KontoLokata KontoLokata;
-        KontoOsobiste KontoOsobiste;
-
-        public Bank(KontoLokata kontoLokata, KontoOsobiste kontoOsobiste)
-        {
-            kontoLokata = KontoLokata;
-            kontoOsobiste = KontoOsobiste;
-        }
-
         public ArrayList kontaBankowe = new ArrayList();
 
         public void SzukajKonto(string nrKonta)
         {
-            foreach (Konto konta in kontaBankowe)
+            foreach (Konto konto in kontaBankowe)
             {
-                if (konta.)
+                if (konto.NrKonta == nrKonta)
                 {
-
+                    Console.WriteLine(konto);
                 }
+            }
+        }
+
+        public void PokazBank()
+        {
+            foreach (Konto konto in kontaBankowe)
+            {
+                Console.WriteLine(konto);
             }
         }
             
@@ -115,7 +115,43 @@ namespace Bank2ver
     {
         static void Main(string[] args)
         {
+            Bank mojBank = new Bank();
 
+            KontoOsobiste kontoOsobisteA = new KontoOsobiste("1", 100);
+            KontoOsobiste kontoOsobisteB = new KontoOsobiste("2", 500);
+            KontoOsobiste kontoOsobisteC = new KontoOsobiste("3", 80);
+
+            KontoLokata kontoLokataA = new KontoLokata("5", 5400);
+            KontoLokata kontoLokataB = new KontoLokata("6", 6500);
+            KontoLokata kontoLokataC = new KontoLokata("7", 3100);
+
+            mojBank.kontaBankowe.Add(kontoLokataA);
+            mojBank.kontaBankowe.Add(kontoLokataB);
+            mojBank.kontaBankowe.Add(kontoLokataC);
+
+            mojBank.kontaBankowe.Add(kontoOsobisteA);
+            mojBank.kontaBankowe.Add(kontoOsobisteB);
+            mojBank.kontaBankowe.Add(kontoOsobisteC);
+
+            mojBank.PokazBank();
+            mojBank.SzukajKonto("2");
+
+            kontoOsobisteB.Wplac(58.25);
+            Console.WriteLine(kontoOsobisteB);
+
+            kontoOsobisteB.Wyplac(1000.00);
+            kontoOsobisteB.Wyplac(100.50);
+
+            Console.WriteLine(kontoOsobisteB);
+
+            kontoLokataC.Wplac(2550.00);
+            Console.WriteLine(kontoLokataC);
+            double zyskKontaLokataC = kontoLokataC.ObliczZysk(0.5);
+            Console.WriteLine(zyskKontaLokataC);
+
+            Console.WriteLine(kontoLokataC);
+
+            Console.ReadKey();
         }
     }
 }

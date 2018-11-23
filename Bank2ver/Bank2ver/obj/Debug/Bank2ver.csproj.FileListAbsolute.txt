@@ -1,0 +1,7 @@
+D:\repo\Bank2ver\Bank2ver\Bank2ver\bin\Debug\Bank2ver.exe.config
+D:\repo\Bank2ver\Bank2ver\Bank2ver\bin\Debug\Bank2ver.exe
+D:\repo\Bank2ver\Bank2ver\Bank2ver\bin\Debug\Bank2ver.pdb
+D:\repo\Bank2ver\Bank2ver\Bank2ver\obj\Debug\Bank2ver.csprojAssemblyReference.cache
+D:\repo\Bank2ver\Bank2ver\Bank2ver\obj\Debug\Bank2ver.csproj.CoreCompileInputs.cache
+D:\repo\Bank2ver\Bank2ver\Bank2ver\obj\Debug\Bank2ver.exe
+D:\repo\Bank2ver\Bank2ver\Bank2ver\obj\Debug\Bank2ver.pdb
